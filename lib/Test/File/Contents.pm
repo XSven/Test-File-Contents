@@ -183,7 +183,7 @@ sub file_contents_eq_or_diff {
     my $fn = _resolve($file);
     $desc ||= "$file contents equal to string";
 
-    my $have = _slurp($fn, $opts->{encoding});
+    my $have = _slurp($fn, $opts);
     if (defined $have) {
         return $Test->ok($have eq $want, $desc) || $Test->diag(
             diff \$have, \$want, {
@@ -406,7 +406,7 @@ sub _files_eq {
     my @contents;
     for my $f ($f1, $f2) {
         my $file = _resolve($f);
-        push @contents => _slurp($file, $opts->{encoding});
+        push @contents => _slurp($file, $opts);
         next if defined $contents[-1];
         return $Test->ok(0, $desc)
             || $Test->diag("    Could not open file $file: $!");
@@ -422,7 +422,7 @@ sub _compare {
     my $file = _resolve(shift);
     my ($code, $opts, $desc, $err) = @_;
     local $Test::Builder::Level = 2;
-    my $contents = _slurp($file, $opts->{encoding});
+    my $contents = _slurp($file, $opts);
     if (defined $contents) {
         return $Test->ok(scalar $code->($contents), $desc)
             || $Test->diag("    $err");
@@ -433,7 +433,8 @@ sub _compare {
 }
 
 sub _slurp {
-    my ($file, $encoding) = @_;
+    my ($file, $opts) = @_;
+    my $encoding = $opts->{encoding};
     my $layer = !$encoding  ? ''
         : $encoding =~ '^:' ? $encoding
         :                     ":encoding($encoding)";
