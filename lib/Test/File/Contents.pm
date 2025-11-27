@@ -442,7 +442,8 @@ sub _slurp {
     return '' if eof $fh;
     # Don't use `local $/; return <$fh>;`, it does not work on Windows.
     # See https://rt.perl.org/Ticket/Display.html?id=127668 for details.
-    return join '', <$fh>;
+    my $filter = $opts->{filter};
+    return join '', $filter ? map{ $filter->($_) } <$fh> : <$fh>;
 }
 
 sub _resolve {
