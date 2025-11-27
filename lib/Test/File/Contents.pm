@@ -190,7 +190,7 @@ sub file_contents_eq_or_diff {
                 CONTEXT     => $opts->{context},
                 STYLE       => $opts->{style},
                 FILENAME_A  => $file,
-                FILENAME_B  => "Want",
+                FILENAME_B  => 'Want',
             }
         );
     } else {
